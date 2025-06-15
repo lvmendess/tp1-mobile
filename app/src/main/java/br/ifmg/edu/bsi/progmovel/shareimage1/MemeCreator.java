@@ -13,28 +13,41 @@ import android.util.DisplayMetrics;
  * Você pode controlar o texto, a cor do texto e a imagem de fundo.
  */
 public class MemeCreator {
-    private String texto;
+    private String textoCima;
+    private String textoBaixo;
     private int corTexto;
+    private float tamTexto;
     private Bitmap fundo;
     private DisplayMetrics displayMetrics;
     private Bitmap meme;
     private boolean dirty; // se true, significa que o meme precisa ser recriado.
 
-    public MemeCreator(String texto, int corTexto, Bitmap fundo, DisplayMetrics displayMetrics) {
-        this.texto = texto;
+    public MemeCreator(String textoCima, String textoBaixo, int corTexto, float tamTexto, Bitmap fundo, DisplayMetrics displayMetrics) {
+        this.textoCima = textoCima;
+        this.textoBaixo = textoBaixo;
         this.corTexto = corTexto;
         this.fundo = fundo;
         this.displayMetrics = displayMetrics;
         this.meme = criarImagem();
         this.dirty = false;
+        this.tamTexto = tamTexto;
     }
 
-    public String getTexto() {
-        return texto;
+    public String getTextoCima() {
+        return textoCima;
     }
 
-    public void setTexto(String texto) {
-        this.texto = texto;
+    public void setTextoCima(String textoCima) {
+        this.textoCima = textoCima;
+        dirty = true;
+    }
+
+    public String getTextoBaixo() {
+        return textoBaixo;
+    }
+
+    public void setTextoBaixo(String textoBaixo) {
+        this.textoBaixo = textoBaixo;
         dirty = true;
     }
 
@@ -44,6 +57,13 @@ public class MemeCreator {
 
     public void setCorTexto(int corTexto) {
         this.corTexto = corTexto;
+        dirty = true;
+    }
+
+    public float getTamTexto(){ return tamTexto;}
+
+    public void setTamTexto(float tamTexto){
+        this.tamTexto = tamTexto;
         dirty = true;
     }
 
@@ -89,14 +109,14 @@ public class MemeCreator {
 
         paint.setColor(corTexto);
         paint.setAntiAlias(true);
-        paint.setTextSize(64.f);
+        paint.setTextSize(tamTexto);
         paint.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
         // desenhar texto em cima
-        //canvas.drawText(texto, (width / 2.f), (height * 0.15f), paint);
+        canvas.drawText(textoCima, (width / 2.f), (height * 0.15f), paint);
 
         // desenhar texto embaixo
-        canvas.drawText(texto, (width / 2.f), (height * 0.9f), paint);
+        canvas.drawText(textoBaixo, (width / 2.f), (height * 0.9f), paint);
         return bitmap;
     }
 }

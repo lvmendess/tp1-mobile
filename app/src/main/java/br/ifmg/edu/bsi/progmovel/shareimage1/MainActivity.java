@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,7 +41,11 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
+    private GridView gridView;
     private MemeCreator memeCreator;
+    private int[] templates = {R.drawable.fry_meme, R.drawable.kneesurgery,R.drawable.domingoanoite, R.drawable.mage};
+    private int templateAtual = 0;
+
     private final ActivityResultLauncher<Intent> startNovoTexto = registerForActivityResult(new StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -48,14 +53,19 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent intent = result.getData();
                         if (intent != null) {
-                            String novoTexto = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVO_TEXTO);
+                            String novoTextoCima = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVO_TEXTO_CIMA);
+                            String novoTextoBaixo = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVO_TEXTO_BAIXO);
                             String novaCor = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVA_COR);
+                            String novoTam = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVO_TAM);
                             if (novaCor == null) {
                                 Toast.makeText(MainActivity.this, "Cor desconhecida. Usando preto no lugar.", Toast.LENGTH_SHORT).show();
                                 novaCor = "BLACK";
                             }
-                            memeCreator.setTexto(novoTexto);
+
+                            memeCreator.setTextoCima(novoTextoCima);
+                            memeCreator.setTextoBaixo(novoTextoBaixo);
                             memeCreator.setCorTexto(Color.parseColor(novaCor.toUpperCase()));
+                            memeCreator.setTamTexto(Float.parseFloat(novoTam));
                             mostrarImagem();
                         }
                     }
@@ -107,18 +117,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imageView = findViewById(R.id.imageView);
 
-        Bitmap imagemFundo = BitmapFactory.decodeResource(getResources(), R.drawable.fry_meme);
+        //Bitmap imagemFundo = BitmapFactory.decodeResource(getResources(), R.drawable.fry_meme);
+        Bitmap imagemFundo = BitmapFactory.decodeResource(getResources(), templates[templateAtual]);
 
-        memeCreator = new MemeCreator("Olá Android!", Color.WHITE, imagemFundo, getResources().getDisplayMetrics());
+        memeCreator = new MemeCreator("Olá Android!", "Olá Android!", Color.WHITE, 64, imagemFundo, getResources().getDisplayMetrics());
         mostrarImagem();
     }
 
     public void iniciarMudarTexto(View v) {
         Intent intent = new Intent(this, NovoTextoActivity.class);
-        intent.putExtra(NovoTextoActivity.EXTRA_TEXTO_ATUAL, memeCreator.getTexto());
+        intent.putExtra(NovoTextoActivity.EXTRA_TEXTO_CIMA_ATUAL, memeCreator.getTextoCima());
+        intent.putExtra(NovoTextoActivity.EXTRA_TEXTO_BAIXO_ATUAL, memeCreator.getTextoBaixo());
         intent.putExtra(NovoTextoActivity.EXTRA_COR_ATUAL, converterCor(memeCreator.getCorTexto()));
+        intent.putExtra(NovoTextoActivity.EXTRA_TAM_ATUAL, Float.toString(memeCreator.getTamTexto()));
 
         startNovoTexto.launch(intent);
+    }
+
+    public void iniciarMudarTemplate(View v){
+        if(templateAtual+1 == templates.length){
+            templateAtual = 0;
+        }else{
+            templateAtual++;
+        }
+        Bitmap imagemFundo = BitmapFactory.decodeResource(getResources(), templates[templateAtual]);
+        memeCreator.setFundo(imagemFundo);
+        mostrarImagem();
     }
 
     public String converterCor(int cor) {
