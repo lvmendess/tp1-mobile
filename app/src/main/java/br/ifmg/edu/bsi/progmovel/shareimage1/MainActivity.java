@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -122,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
 
         memeCreator = new MemeCreator("Olá Android!", "Olá Android!", Color.WHITE, 64, imagemFundo, getResources().getDisplayMetrics());
         mostrarImagem();
+
+        imageView.setOnLongClickListener(e -> {
+            Toast.makeText(getApplicationContext(), "long CLICK", Toast.LENGTH_SHORT).show();
+            Log.d("MEMECREATOR", "Long pressed");
+            return true;
+        });
     }
 
     public void iniciarMudarTexto(View v) {
