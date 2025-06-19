@@ -21,6 +21,11 @@ public class MemeCreator {
     private DisplayMetrics displayMetrics;
     private Bitmap meme;
     private boolean dirty; // se true, significa que o meme precisa ser recriado.
+    private boolean isTextoCima;
+    float xSuperior;
+    float ySuperior;
+    float x;
+    float y;
 
     public MemeCreator(String textoCima, String textoBaixo, int corTexto, float tamTexto, Bitmap fundo, DisplayMetrics displayMetrics) {
         this.textoCima = textoCima;
@@ -31,6 +36,56 @@ public class MemeCreator {
         this.meme = criarImagem();
         this.dirty = false;
         this.tamTexto = tamTexto;
+        this.x = -1;
+        this.y = -1;
+        this.xSuperior = -1;
+        this.ySuperior = -1;
+        this.isTextoCima = false;
+    }
+
+    public float getxSuperior() {
+        return xSuperior;
+    }
+
+    public void setxSuperior(float xSuperior) {
+        this.xSuperior = xSuperior;
+        dirty = true;
+    }
+
+    public float getySuperior() {
+        return ySuperior;
+    }
+
+    public void setySuperior(float ySuperior) {
+        this.ySuperior = ySuperior;
+        dirty = true;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+        dirty = true;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+        dirty = true;
+    }
+
+    public boolean isTextoCima() {
+        return isTextoCima;
+    }
+
+    public void setTextoCima(boolean textoCima) {
+        isTextoCima = textoCima;
+        dirty = true;
     }
 
     public String getTextoCima() {
@@ -115,10 +170,19 @@ public class MemeCreator {
         paint.setTextAlign(Paint.Align.CENTER);
 
         // desenhar texto em cima
-        canvas.drawText(textoCima, (width / 2.f), (height * 0.15f), paint);
+        if(x==-1 && y==-1) {
+            canvas.drawText(textoCima, (width / 2.f), (height * 0.15f), paint);
+        }else{
+            canvas.drawText(textoCima, xSuperior, ySuperior, paint);
+        }
 
         // desenhar texto embaixo
-        canvas.drawText(textoBaixo, (width / 2.f), (height * 0.9f), paint);
+        if(x==-1 && y==-1){
+            canvas.drawText(textoBaixo, (width / 2.f), (height * 0.9f), paint);
+        }else{
+            canvas.drawText(textoBaixo, x, y, paint);
+        }
+        //canvas.drawText(textoBaixo, (width / 2.f), (height * 0.9f), paint);
         return bitmap;
     }
 }

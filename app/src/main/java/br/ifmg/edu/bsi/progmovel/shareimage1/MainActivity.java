@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private MemeCreator memeCreator;
     private int[] templates = {R.drawable.fry_meme, R.drawable.kneesurgery,R.drawable.domingoanoite, R.drawable.mage};
     private int templateAtual = 0;
-
+    private float[] lastTouchDownXY = new float[2];
     private final ActivityResultLauncher<Intent> startNovoTexto = registerForActivityResult(new StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                             String novoTextoBaixo = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVO_TEXTO_BAIXO);
                             String novaCor = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVA_COR);
                             String novoTam = intent.getStringExtra(NovoTextoActivity.EXTRA_NOVO_TAM);
+                            boolean textoSuperior = intent.getBooleanExtra(NovoTextoActivity.EXTRA_TOGGLETEXTO, false);
                             if (novaCor == null) {
                                 Toast.makeText(MainActivity.this, "Cor desconhecida. Usando preto no lugar.", Toast.LENGTH_SHORT).show();
                                 novaCor = "BLACK";
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                             memeCreator.setTextoBaixo(novoTextoBaixo);
                             memeCreator.setCorTexto(Color.parseColor(novaCor.toUpperCase()));
                             memeCreator.setTamTexto(Float.parseFloat(novoTam));
+                            memeCreator.setTextoCima(textoSuperior);
                             mostrarImagem();
                         }
                     }
@@ -125,12 +127,46 @@ public class MainActivity extends AppCompatActivity {
         memeCreator = new MemeCreator("Olá Android!", "Olá Android!", Color.WHITE, 64, imagemFundo, getResources().getDisplayMetrics());
         mostrarImagem();
 
-        imageView.setOnLongClickListener(e -> {
+        /*imageView.setOnLongClickListener(e -> {
             Toast.makeText(getApplicationContext(), "long CLICK", Toast.LENGTH_SHORT).show();
             Log.d("MEMECREATOR", "Long pressed");
             return true;
-        });
+        });*/
+
+        imageView.setOnTouchListener(touchlistener);
+        imageView.setOnLongClickListener(longClickListener);
     }
+
+    View.OnTouchListener touchlistener = new View.OnTouchListener(){
+        @Override
+        public boolean onTouch(View v, MotionEvent event){
+            if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
+                lastTouchDownXY[0] = event.getX();
+                lastTouchDownXY[1] = event.getY();
+            }
+            return false;
+        }
+    };
+
+    View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            float x = lastTouchDownXY[0];
+            float y = lastTouchDownXY[1];
+            if(memeCreator.isTextoCima()){
+                memeCreator.setxSuperior(x);
+                memeCreator.setySuperior(y);
+            }else{
+                memeCreator.setX(x);
+                memeCreator.setY(y);
+            }
+            mostrarImagem();
+
+            Log.i("tag","long click");
+            Toast.makeText(getApplicationContext(), "long CLICK", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    };
 
     public void iniciarMudarTexto(View v) {
         Intent intent = new Intent(this, NovoTextoActivity.class);

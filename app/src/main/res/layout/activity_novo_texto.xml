@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="236dp"
         android:onClick="enviarNovoTexto"
         android:text="@string/salvar"
         app:layout_constraintStart_toStartOf="@+id/etCor"
@@ -99,5 +99,18 @@
         android:text="@string/cor_do_texto"
         app:layout_constraintStart_toStartOf="@+id/etTextoCima"
         app:layout_constraintTop_toBottomOf="@+id/etTextoBaixo" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="ToggleButton"
+        android:textOff="inferior"
+        android:textOn="superior"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintTop_toBottomOf="@+id/etTam"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
