@@ -99,6 +99,7 @@ public class MemeCreator {
             height = (int) (displayMetrics.heightPixels * 0.6);
             width = (int) (height * (1 / heightFactor));
         }
+
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
@@ -112,6 +113,7 @@ public class MemeCreator {
         paint.setTextSize(tamTexto);
         paint.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
+
         // desenhar texto em cima
         canvas.drawText(textoCima, (width / 2.f), (height * 0.15f), paint);
 
